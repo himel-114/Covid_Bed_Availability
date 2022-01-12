@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+{%load custom_tags %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Covid Help</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+    <br><br>
+    <div class="container-fluid">
+
+        <div>
+            <!--form-->
+            <form action="" id='filterForm'method="GET">
+                <div class="row">
+                     <!--division-->
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="">select division</label>
+                            <select name='division' id='divisionState' class="form-control">
+                              <option value=''> select division</option>
+                              {%for division in divisions%}
+                                <option {%is_division_selected selected_division_id division.pk%} value="{{division.pk}}">{{division}}</option>
+                              {%endfor%}
+                              
+                            </select>
+                          </div>
+                    </div>
+
+                    <!--city-->
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="">select city</label>
+                            <select name='city' class="form-control" id="citySelect">
+                              <option  value=''> select city</option>
+                              {%for city in cities%}
+                                <option {%is_city_selected selected_city_id city.pk%} value="{{city.pk}}">{{city.name}}</option>
+                              {%endfor%}
+                              
+                            </select>
+                          </div>
+                    </div>
+        
+                  
+                </div>
+            </form>
+        </div>
+
+        <hr>
+        
+        <table class="table text-center table-bordered table-striped" >
+            <thead class="thead-light">
+                <tr>
+                    <th rowspan="2">Hospital</th>
+                    {%for facility in facilities%}
+                    <th colspan="2" class="text-center">{{facility.title}}</th>
+                    {%endfor%}
+                
+
+                    
+                </tr>
+                <tr>
+                    
+                    {%for facility in facilities%}
+                    <th >Total</th>
+                    <th >Available</th>
+                    {%endfor%}
+                    
+                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for hospital in hospitals %}
+                <tr>
+                 <td>{{hospital.name}}</td>
+                 {%get_availibilities hospital as availibilities%}
+                 {% for avl in availibilities %}
+                    <td >{{avl.total}}</td>
+                    <td class='{%get_table_class avl.available%}'>{{avl.available}}</td>
+                 {%endfor%}
+                   
+                </tr>
+            
+           
+                {%endfor%}
+            </tbody>
+
+
+        </table>
+    </div>
+</body>
+<!--javascripts-->
+<script>
+    window.onload=function(){
+       var divisionState = document.getElementById('divisionState')
+       var citySelect = document.getElementById('citySelect')
+       var form = document.getElementById('filterForm')
+
+       var formSubmit = function(){
+           form.submit();
+       }
+       divisionState.onchange=formSubmit
+       
+       citySelect.onchange=formSubmit
+       
+    }
+
+</script>
+</html>
